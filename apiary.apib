@@ -1,0 +1,162 @@
+FORMAT: 1A
+
+
+# UpSpain
+
+PaynoPain UpSpain API
+
+
+# Data Structures
+## Data Object
+
+### Purchase Receipt (object)
++ id
++ receipt_number
++ date
++ expediter_name
++ tax_identification_code
++ taxable_base
++ tax_rate
++ tax_fee
++ pdf - signed pdf base64 encoded
+
+### User (object)
++ id
++ external_id
++ first_name
++ last_name
++ roles (array)
++ commerces (array)
+
+
+### Closure Purchase Receipt (object)
++ id (number) - (PK)
++ user_id - (FK user id) id interno de usuario
++ start_date - 2016-5-1 00:07:00 (UTC)
++ end_date- 2016-5-31 00:07:00 (UTC)
++ created_at
++ url
+
+### Error Response (object)
++ error - Tipo del error
++ error_description - Descripción del error
+
+
+## Notas de gasto [/purchase_receipt]
+### Listar Notas de gasto [GET]
++ Request (application/json)
+    + Attributes(object)
+        + user_id (number)
+        + start_date - YYYY-MM-DD +0100
+        + end_date - YYYY-MM-DD +0100
+        + transaction_type (string)
+        + own_transactions (boolean)
+        
+    + Headers
+            
+            Authorization: Bearer XXXXXX
+        
+        
+
++ Response 200 (application/json)
+    + Attributes (array[Purchase Receipt])
+
+
+
+### Crea una nueva Nota de Gasto [POST]
+
++ Request (application/json)
+    + Attributes(object)
+        + receipt_number (required)
+        + date (required)
+        + expediter_name (required)
+        + tax_identification_code (required)
+        + taxable_base (required)
+        + tax_rate (required)
+        + tax_fee (required)
+        + pdf - signed pdf base64 encoded (required)
+        
+    + Headers
+            
+            Authorization: Bearer XXXXXX
+
++ Response 201 (application/json)
+
+## Cierre Notas de gasto [/purchase_receipt_closure]
+
+### Crea cierre de Notas de Gasto [POST]
+
++ Request (application/json)
+    + Attributes
+        + start_date - YYYY-MM-DD +0100
+        + end_date - YYYY-MM-DD +0100
+        + user - user external id
+        
+    + Headers
+            
+            Authorization: Bearer XXXXXX
+        
++ Response 201 (application/json)
+
+
+## User [/user]
+### Registrar usuario [POST]
+
+- **roles** 
+    - ROLE_ISSUER
+    - ROLE_OBSERVER
+    - ROLE_BENEFICIARY
+    - ROLE_ADMIN
+
++ Request (application/json)
+    + Attributes
+        + id (required) - id externa, refiere al usuario de upspain
+        + first_name (required)
+        + last_name (required)
+        + roles (array, required)
+        
++ Response 201
+    + Attributes (User)
+
+
+## OAuth [/oauth/v2/token]
+
+Opciones de ***grant_type***:
+- **refresh_token**
+- **client_credentials**
+- **https://upspain-api.paynopain.com/grants/upspain**
+    
+    - Requerirá:
+        - upspain_token
+    
+
+### Obtener Token [POST]
++ Request (application/json)
+    + Attributes
+        + grant_type: `https://upspain-api.paynopain.com/grants/upspain` (string)
+        + `client_id`: 2_1keecruzdrk04ko444k0kcg8wwwggkkggss4scks8ss00ccgs4 (string)
+        + client_secret: `1vyrfh9uxvwg40g04wo4gwcgkgokcwgkg4w80ccccgg488o4k8` (string)
+        + upspain_token: xxxxx
+
++ Response 200 (application/json)
+    + Attributes
+        + access_token (string)
+        + expires_in: 3600 (number)
+        + token_type : bearer
+        + scope: null
+        + refresh_token (string)
+        
++ Response 400
+    Si la request está mal formada o los "client credentials" no son válidos
+
+    + Attributes (Error Response)
+    
++ Response 401
+    Acceso no autorizado. Puede deberse a que el token de UpSpain no está autorizado por ellos.
+
+    + Attributes (Error Response)
+    
++ Response 403
+    Acceso no permitido. No existe ningún usuario registrado que corresponda al usuario identificado.
+
+    + Attributes (Error Response)
