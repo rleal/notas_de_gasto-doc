@@ -46,9 +46,8 @@ PaynoPain UpSpain API
 ### Listar Notas de gasto [GET]
 + Request (application/json)
     + Attributes(object)
-        + user_id (number)
-        + start_date - YYYY-MM-DD +0100
-        + end_date - YYYY-MM-DD +0100
+        + start_date 
+        + end_date
         + transaction_type (string)
         + own_transactions (boolean)
         
@@ -67,20 +66,68 @@ PaynoPain UpSpain API
 
 + Request (application/json)
     + Attributes (object)
-        + receipt_number (required)
-        + date (required)
+        + receipt_number 
+        + date
+        + transaction_date (required)
         + expediter_name (required)
-        + tax_identification_code (required)
-        + taxable_base (required)
-        + tax_rate (required)
-        + tax_fee (required)
-        + pdf - signed pdf base64 encoded (required)
+        + tax_identification_code
+        + taxable_base (number, required)
+        + tax_rate (number)
+        + tax_fee (number, required)
+        + description
+        + payment_method (required)
+        + last_four_card_numbers
+        + expense_type
+        + pdf (required) - signed pdf base64 encoded 
+        + invoice_type
         
     + Headers
             
             Authorization: Bearer XXXXXX
 
 + Response 201 (application/json)
+
+
+    
+## Dgitalización [/digitalization/{purchase_receipt_id}/digitalization]
+
+### Convertir en Nota de gasto Pendiente [PUT]
+
++ Request (application/json)
+    + Parameters
+        + purchase_receipt_id
+        
+    + Attributes (object)
+        + receipt_number (required)
+        + tax_identification_code (required)
+        + date (required)
+        + tax_rate (required)
+        + last_four_card_numbers (required)
+    
+        
+    + Headers
+    
+            Authorization: Bearer XXXXXX
+    
++ Response 200 (application/json)
+        
+
+    
+## Estado de Notas de gasto [/purchase_receipt/{purchase_receipt_id}/status]
+
+
+### Rechazar Notas de gasto [PUT]
++ Request (application/json)
+    + Parameters
+        + purchase_receipt_id
+
+    + Headers
+            
+            Authorization: Bearer XXXXXX
+        
+        
+
++ Response 200 (application/json)
 
 ## Cierre Notas de gasto [/purchase_receipt_closure]
 
