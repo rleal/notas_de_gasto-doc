@@ -18,7 +18,11 @@ PaynoPain UpSpain API
 + taxable_base
 + tax_rate
 + tax_fee
-+ pdf - signed pdf base64 encoded
++ pdf
++ state
++ transaction_id
++ payment_method
++ paid (boolean)
 
 ### User (object)
 + id
@@ -89,7 +93,7 @@ PaynoPain UpSpain API
 
 
     
-## Dgitalización [/digitalization/{purchase_receipt_id}/digitalization]
+## Digitalization To Pending [/purchase_receipt/{purchase_receipt_id}/state/pending]
 
 ### Convertir en Nota de gasto Pendiente [PUT]
 
@@ -113,7 +117,7 @@ PaynoPain UpSpain API
         
 
     
-## Estado de Notas de gasto [/purchase_receipt/{purchase_receipt_id}/status]
+## Estado de Notas de gasto [/purchase_receipt/{purchase_receipt_id}/state/refused]
 
 
 ### Rechazar Notas de gasto [PUT]
@@ -128,6 +132,35 @@ PaynoPain UpSpain API
         
 
 + Response 200 (application/json)
+
+
+### PDF de Nota de gasto [/purchase_receipt/{purchase_receipt_id}/pdf?access_token={access_token}]
+## Obtener pdf de nota de gasto [GET]
++ Request (application/json)
+    + Parameters
+        + purchase_receipt_id
+        + access_token
+        
+    
+
++ Response 200 (application/pdf)
+
+## Abonos Nota de gasto [/purchase_receipt/{purchase_receipt_id}/paid]
+
+### Marcar abonada [PUT]
++ Request (application/json)
+    + Parameters
+        + purchase_receipt_id
+        
+    + Headers
+    
+            Authorization: Bearer XXXXXX
+            
++ Response 200 (application/json)
+    + Attributes (Purchase Receipt)
+        
+
+
 
 ## Cierre Notas de gasto [/purchase_receipt_closure]
 
@@ -148,7 +181,6 @@ PaynoPain UpSpain API
     + Attributes
         + start_date - YYYY-MM-DD +0100
         + end_date - YYYY-MM-DD +0100
-        + user - user external id
         
     + Headers
             
@@ -161,19 +193,11 @@ PaynoPain UpSpain API
 ## User [/user]
 ### Registrar usuario [POST]
 
-- **roles** 
-    - ROLE_ISSUER
-    - ROLE_OBSERVER
-    - ROLE_BENEFICIARY
-    - ROLE_ADMIN
 
 + Request (application/json)
     + Attributes
-        + id (required) - id externa, refiere al usuario de upspain
-        + first_name (required)
-        + last_name (required)
-        + roles (array, required)
-        + commerces (array) - ids de comercios
+        + id (required) - id externa, refiere al usuario de upspain)
+        + platform_type - WEB | APP
         
 + Response 201
     + Attributes (User)
@@ -197,6 +221,7 @@ Opciones de ***grant_type***:
         + `client_id`: 2_1keecruzdrk04ko444k0kcg8wwwggkkggss4scks8ss00ccgs4 (string)
         + client_secret: `1vyrfh9uxvwg40g04wo4gwcgkgokcwgkg4w80ccccgg488o4k8` (string)
         + upspain_token: xxxxx
+        + platform_type : WEB - WEB | APP
 
 + Response 200 (application/json)
     + Attributes
