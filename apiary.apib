@@ -6,6 +6,18 @@ FORMAT: 1A
 PaynoPain UpSpain API
 
 
+
+# Métodos de pago (payment_method):
++ UPACTIVA_CARD
++ PERSONAL_CARD
++ PERSONAL_CASH
++ COMPANY_CASH
+
+# Tipos de factura (invoice_type):
++ INVOICE
++ TICKET
+
+
 # Data Structures
 ## Data Object
 
@@ -46,6 +58,30 @@ PaynoPain UpSpain API
 + error_description - Descripción del error
 
 
+## Certificado [/certificate]
+### Obtener un certificado validado [GET]
+
+Para un usuario (ROLE_BENEFICIARY) devuelve el certificado que debe usar para firmar, en formato p12 o pem.
+
++ Request P12
+    + Headers
+    
+            Authorization: Bearer XXXXXX
+            Accept: application/x-pkcs12
++ Request PEM
+    + Headers
+    
+            Authorization: Bearer XXXXXX
+            Accept: application/x-pem-file         
+            
+            
+
++ Response 200 (application/x-pkcs12)
++ Response 200 (application/x-pem-file)
++ Response 400
++ Response 403
++ Response 422
+
 ## Notas de gasto [/purchase_receipt]
 ### Listar Notas de gasto [GET]
 + Request (application/json)
@@ -58,15 +94,26 @@ PaynoPain UpSpain API
     + Headers
             
             Authorization: Bearer XXXXXX
+            x-page: 1
+            x-page-size: 1000
         
         
 
 + Response 200 (application/json)
     + Attributes (array[Purchase Receipt])
+    
+    + Headers
+    
+            x-page: 1
+            x-page-size: 1000
+            x-page-total-results: 12
 
 
+
++ Response 200 (application/json)
 
 ### Crea una nueva Nota de Gasto [POST]
+
 
 + Request (application/json)
     + Attributes (object)
@@ -92,6 +139,41 @@ PaynoPain UpSpain API
 + Response 201 (application/json)
 
 
+## Nota de gasto [/purchase_receipt/{purchase_receipt_id}]
+
+### Editar [PUT]
+
++ Request (application/json)
+    + Parameters
+        + purchase_receipt_id
+    
+    + Attributes (object)
+        + receipt_number
+        + date
+        + expediter_name
+        + tax_identification_code
+        + taxable_base (number)
+        + tax_rate (number)
+        + tax_fee (number)
+        + invoice_type
+    
+    + Headers
+    
+            Authorization: Bearer XXXXXX
+            
++ Response 200 (application/json)
+    + Attributes (object)
+        + id
+        + receipt_number
+        + date
+        + expediter_name
+        + tax_identification_code
+        + taxable_base (number)
+        + tax_rate (number)
+        + tax_fee (number)
+        + invoice_type
+    
+    
     
 ## Digitalization To Pending [/purchase_receipt/{purchase_receipt_id}/state/pending]
 
@@ -179,8 +261,9 @@ PaynoPain UpSpain API
 
 + Request (application/json)
     + Attributes
-        + start_date - YYYY-MM-DD +0100
-        + end_date - YYYY-MM-DD +0100
+        + start_date (required)
+        + end_date 
+        + test (boolean) - si se pasa true, el cierre no tiene efecto. Sólo se obtendrá información.
         
     + Headers
             
@@ -188,6 +271,19 @@ PaynoPain UpSpain API
         
 + Response 201 (application/json)
 
+
+## Recuperación de cierres [/purchase_receipt_closure/{closure_id}/recovery]
+### Obtener las notas de gasto de un cierre [GET]
+
++ Request (application/json)
+    + Parameters
+        + closure_id
+    + Headers
+            
+            Authorization: Bearer XXXXXX
+            
++ Response 200 (application/json)
+    + Attributes (array[Purchase Receipt])
 
 
 ## User [/user]
