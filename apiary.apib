@@ -46,10 +46,10 @@ PaynoPain UpSpain API
 
 
 ### Closure Purchase Receipt (object)
-+ id (number) - (PK)
-+ user_id - (FK user id) id interno de usuario
-+ start_date - 2016-5-1 00:07:00 (UTC)
-+ end_date- 2016-5-31 00:07:00 (UTC)
++ id (number) 
++ user_id - id interno de usuario
++ start_date - 2016-05-01T00:07:00+0000
++ end_date - 2016-05-31T00:07:00+0000
 + created_at
 + url
 
@@ -57,6 +57,30 @@ PaynoPain UpSpain API
 + error - Tipo del error
 + error_description - Descripción del error
 
+
+## Responses
+### Purchase Receipt Response (object)
++ id
++ receipt_number
++ date - 2016-05-31T00:07:00+0000
++ transaction_date - 2016-05-31T00:07:00+0000
++ expediter_name
++ tax_identification_code
++ taxable_base
++ tax_rate (number)
++ tax_fee (number)
++ pdf
++ description 
++ last_four_card_numbers
++ invoice_type
++ state
++ payment_method
++ paid (boolean)
++ transaction_id
+
+
+
+# Resources
 
 ## Certificado [/certificate]
 ### Obtener un certificado validado [GET]
@@ -140,6 +164,7 @@ Para un usuario (ROLE_BENEFICIARY) devuelve el certificado que debe usar para fi
 
 
 ## Nota de gasto [/purchase_receipt/{purchase_receipt_id}]
+
 
 ### Editar [PUT]
 
@@ -242,9 +267,17 @@ Para un usuario (ROLE_BENEFICIARY) devuelve el certificado que debe usar para fi
     + Attributes (Purchase Receipt)
         
 
+### Notas de gasto por transacción [/purchase_receipts/transaction/{transaction_id}]
+## Obtener [GET]
++ Request (application/json)
+    + Attributes (object)
+    + Headers
+            
+            Authorization: Bearer XXXXXX
++ Response 200 (application/json)
+    + Attributes (Purchase Receipt Response)
 
-
-## Cierre Notas de gasto [/purchase_receipt_closure]
+## Cierres de Notas de gasto [/purchase_receipt_closure]
 
 ### Listar Cierres de Notas de Gasto [GET]
 + Request (application/json)
@@ -271,8 +304,25 @@ Para un usuario (ROLE_BENEFICIARY) devuelve el certificado que debe usar para fi
         
 + Response 201 (application/json)
 
+## Cierre de Notas de gasto [/purchase_receipt_closure/{closure_id}]
 
-## Recuperación de cierres [/purchase_receipt_closure/{closure_id}/recovery]
+### Eliminar cierre [DELETE]
+
+Se borra el cierre y se reabren las notas de gasto que contiene, pasandolas a estado *STATE_PENDING*
+
++ Request (application/json)
+    + Parameters
+        + closure_id
+    + Headers
+        
+            Authorization: Bearer XXXXXX
+        
++ Response 204
++ Response 403
++ Response 422
+
+
+## Recuperación de Cierre de Notas de Gasto [/purchase_receipt_closure/{closure_id}/recovery]
 ### Obtener las notas de gasto de un cierre [GET]
 
 + Request (application/json)
@@ -284,6 +334,7 @@ Para un usuario (ROLE_BENEFICIARY) devuelve el certificado que debe usar para fi
             
 + Response 200 (application/json)
     + Attributes (array[Purchase Receipt])
+
 
 
 ## User [/user]
